@@ -1,0 +1,129 @@
+<div class="container my-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+          @if (!success) {
+            <div class="text-center mb-4">
+              <h1 style="font-size: 48px; margin-bottom: 10px;">📝</h1>
+              <h2 class="card-title fw-bold" style="color: #0d6efd; font-size: 28px;">Register</h2>
+              <p class="text-muted small">Create your Flight Booking account</p>
+            </div>
+
+            @if (error) {
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span class="me-2">⚠️</span>{{ error }}
+                <button type="button" class="btn-close" (click)="error = ''"></button>
+              </div>
+            }
+
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+           
+              <div class="mb-3">
+                <label for="username" class="form-label fw-500">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  formControlName="username"
+                  [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
+                  placeholder="Choose username (3-20 chars)"
+                />
+                @if (submitted && f['username'].errors) {
+                  <div class="invalid-feedback d-block small">
+                    @if (f['username'].errors['required']) {
+                      <span>Username is required</span>
+                    }
+                    @if (f['username'].errors['minlength']) {
+                      <span>Minimum 3 characters</span>
+                    }
+                    @if (f['username'].errors['maxlength']) {
+                      <span>Maximum 20 characters</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label fw-500">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  formControlName="email"
+                  [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+                  placeholder="Enter email"
+                />
+                @if (submitted && f['email'].errors) {
+                  <div class="invalid-feedback d-block small">
+                    @if (f['email'].errors['required']) {
+                      <span>Email is required</span>
+                    }
+                    @if (f['email'].errors['email']) {
+                      <span>Enter valid email address</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="mb-4">
+                <label for="password" class="form-label fw-500">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  formControlName="password"
+                  [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+                  placeholder="Min 6 characters"
+                />
+                @if (submitted && f['password'].errors) {
+                  <div class="invalid-feedback d-block small">
+                    @if (f['password'].errors['required']) {
+                      <span>Password is required</span>
+                    }
+                    @if (f['password'].errors['minlength']) {
+                      <span>Minimum 6 characters</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary w-100 fw-500 py-2"
+                [disabled]="loading"
+              >
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Registering...
+                } @else {
+                  <span class="me-2">🚀</span> Create Account
+                }
+              </button>
+            </form>
+
+            <div class="my-3">
+              <hr class="my-3" />
+              <p class="text-center text-muted small">Already have an account?</p>
+            </div>
+
+            <a routerLink="/login" class="btn btn-outline-primary w-100 fw-500">
+              <span class="me-2">🔓</span> Login
+            </a>
+          } @else {
+        
+            <div class="text-center">
+              <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+              <h3 class="fw-bold mb-3" style="color: #28a745;">Registration Successful!</h3>
+              <p class="text-muted mb-4">Your account has been created successfully.</p>
+              <p class="small text-secondary">Redirecting to login...</p>
+              <div class="spinner-border spinner-border-sm text-primary mt-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
