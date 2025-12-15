@@ -7,6 +7,7 @@ export interface FlightSearchRequest {
   source: string;
   destination: string;
   departureDate: string;
+  journeyType: string;
 }
 
 export interface Flight {

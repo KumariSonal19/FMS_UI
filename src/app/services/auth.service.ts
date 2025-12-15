@@ -16,76 +16,52 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService
   ) {
-    // Load user from session on service init
-    const user = this.tokenService.getUser();
+    const user = this.getCurrentUser();
     if (user) {
       this.currentUserSubject.next(user);
     }
   }
 
-  /**
-   * Register new user
-   * @param username Username (3-20 chars)
-   * @param email Valid email address
-   * @param password Password (min 6 chars)
-   */
   register(username: string, email: string, password: string): Observable<any> {
-    const body = { username, email, password };
-    return this.http.post(`${this.authUrl}/signup`, body);
+    return this.http.post(`${this.authUrl}/signup`, { username, email, password },{ responseType: 'text' as 'json' });
   }
 
-  /**
-   * Login user
-   * @param username Username
-   * @param password Password
-   */
   login(username: string, password: string): Observable<any> {
-    const body = { username, password };
-    return this.http.post(`${this.authUrl}/signin`, body);
+    return this.http.post(`${this.authUrl}/signin`, { username, password });
   }
 
-  /**
-   * Logout user
-   */
-  logout(): Observable<any> {
-    return this.http.post(`${this.authUrl}/signout`, {});
-  }
-
-  /**
-   * Save user info after successful login
-   */
   saveAuthData(response: any): void {
-    // Save user data
-    this.tokenService.saveUser(response);
-    
-    // Update current user subject
-    this.currentUserSubject.next(response);
-    
-    // Save token if it exists in response
     if (response.token) {
       this.tokenService.saveToken(response.token);
+      const user = this.decodeToken(response.token);
+      this.currentUserSubject.next(user);
     }
   }
 
-  /**
-   * Clear auth data on logout
-   */
-  clearAuthData(): void {
+  logout(): void {
     this.tokenService.clearAuth();
     this.currentUserSubject.next(null);
   }
 
-  /**
-   * Check if user is authenticated
-   */
   isAuthenticated(): boolean {
-    return this.tokenService.isAuthenticated();
+    return this.tokenService.hasToken();
   }
 
-  /**
-   * Get current user
-   */
   getCurrentUser(): any {
-    return this.tokenService.getUser();
+    const token = this.tokenService.getToken();
+    return token ? this.decodeToken(token) : null;
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        username: payload.sub, 
+        roles: payload.roles || []
+      };
+    } catch (e) {
+      console.error('Error decoding token', e);
+      return null;
+    }
   }
 }

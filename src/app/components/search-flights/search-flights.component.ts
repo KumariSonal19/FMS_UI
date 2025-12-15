@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FlightService, Flight } from '../../services/flight.service';
@@ -26,14 +26,18 @@ export class SearchFlightsComponent implements OnInit {
     { code: 'PNQ', name: 'Pune (PNQ)' }
   ];
 
-  constructor(private fb: FormBuilder, private flightService: FlightService) { }
+  constructor(
+    private fb: FormBuilder,
+    private flightService: FlightService,
+    private cd: ChangeDetectorRef 
+  ) { }
 
   ngOnInit() {
     this.searchForm = this.fb.group({
       source: ['', Validators.required],
       destination: ['', Validators.required],
       departureDate: ['', Validators.required],
-      journeyType: ['ONEWAY']
+      journeyType: ['ONE_WAY']
     });
   }
 
@@ -52,23 +56,36 @@ export class SearchFlightsComponent implements OnInit {
 
     this.loading = true;
     this.searched = true;
-    this.flights = [];
+    this.flights = []; 
 
-    this.flightService.searchFlights(this.searchForm.value).subscribe({
+    const searchRequest = {
+      source: this.f['source'].value,
+      destination: this.f['destination'].value,
+      departureDate: this.f['departureDate'].value,
+      journeyType: 'ONE_WAY'
+    };
+
+    console.log('[Search] Sending request:', searchRequest);
+
+    this.flightService.searchFlights(searchRequest).subscribe({
       next: (data) => {
+        console.log('[Search] Response received:', data);
         this.flights = data || [];
         this.loading = false;
+
+        this.cd.detectChanges(); 
       },
       error: (err) => {
-        console.error(err);
-        this.error = 'Could not fetch flights. Is the backend running?';
+        console.error('[Search] Error:', err);
+        this.error = 'Search failed. Check console for details.';
         this.loading = false;
+      
+        this.cd.detectChanges();
       }
     });
   }
 
   bookFlight(flight: Flight) {
     alert(`Initiating booking for Flight ${flight.flightId}`);
-   
   }
 }

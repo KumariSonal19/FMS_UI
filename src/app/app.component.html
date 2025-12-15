@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-glass navbar-light">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/">
+      <span style="font-size: 1.5rem;"></span>
+      <span class="fw-bold text-primary">SkyScanner</span>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navContent">
+      <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
+        <li class="nav-item"><a routerLink="/home" routerLinkActive="active" class="nav-link">Home</a></li>
+        
+        @if (isAuthenticated) {
+          <li class="nav-item"><a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Search Flights</a></li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                {{ username.charAt(0).toUpperCase() }}
+              </div>
+              <span>{{ username }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2" style="border-radius: 12px;">
+              <li><a routerLink="/profile" class="dropdown-item rounded">My Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><button class="dropdown-item rounded text-danger">Logout</button></li>
+            </ul>
+          </li>
+        } @else {
+          <li class="nav-item">
+            <a routerLink="/login" class="btn btn-outline-primary border-2 fw-bold px-4">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/register" class="btn btn-primary px-4">Register</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div style="padding-top: 80px;">
+  <router-outlet></router-outlet>
+</div>
