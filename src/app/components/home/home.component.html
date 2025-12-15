@@ -1,0 +1,128 @@
+<div class="hero-section">
+  <div class="container py-5">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <h1 class="hero-title mb-4">
+          Fly Anywhere, Anytime
+        </h1>
+        <p class="hero-subtitle mb-4">
+          Search and book your perfect flight. Get the best deals on domestic and international flights with just a few clicks.
+        </p>
+        <div class="d-flex gap-3 flex-column flex-sm-row">
+          @if (!isAuthenticated) {
+            <a routerLink="/register" class="btn btn-primary btn-lg px-4 fw-600">
+              <span class="me-2"></span> Get Started
+            </a>
+            <a routerLink="/login" class="btn btn-outline-light btn-lg px-4 fw-600">
+              <span class="me-2"></span> Sign In
+            </a>
+          } @else {
+            <a routerLink="/dashboard" class="btn btn-primary btn-lg px-4 fw-600">
+              <span class="me-2"></span> Book Flights
+            </a>
+            <a routerLink="/profile" class="btn btn-outline-light btn-lg px-4 fw-600">
+              <span class="me-2"></span> My Profile
+            </a>
+          }
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img
+          src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=600&fit=crop"
+          alt="Flight"
+          class="img-fluid rounded-3xl shadow-lg"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5" style="color: #333; font-size: 32px;">
+      Why Choose Us?
+    </h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h4 class="fw-bold mt-3 mb-2">1000+ Routes</h4>
+          <p class="text-muted">
+            Access flights across all major domestic and international routes.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h4 class="fw-bold mt-3 mb-2">Secure Payment</h4>
+          <p class="text-muted">
+            Your transactions are protected with industry-leading encryption.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h4 class="fw-bold mt-3 mb-2">24/7 Support</h4>
+          <p class="text-muted">
+            Our team is always ready to help with your booking queries.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-primary text-white">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-md-3">
+        <div class="stat-item">
+          <h3 class="fw-bold" style="font-size: 40px;">50k+</h3>
+          <p class="mb-0">Happy Customers</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-item">
+          <h3 class="fw-bold" style="font-size: 40px;">1000+</h3>
+          <p class="mb-0">Flight Routes</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-item">
+          <h3 class="fw-bold" style="font-size: 40px;">50+</h3>
+          <p class="mb-0">Airlines</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-item">
+          <h3 class="fw-bold" style="font-size: 40px;">100k+</h3>
+          <p class="mb-0">Bookings/Month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-4">Ready to Book Your Flight?</h2>
+    <p class="lead mb-4 text-muted">
+      @if (!isAuthenticated) {
+        Join thousands of travelers who have booked their flights with us.
+      } @else {
+        Welcome back, {{ username }}! Start exploring available flights.
+      }
+    </p>
+    @if (!isAuthenticated) {
+      <a routerLink="/register" class="btn btn-primary btn-lg px-5">
+        <span class="me-2"></span> Create Account Now
+      </a>
+    } @else {
+      <a routerLink="/dashboard" class="btn btn-primary btn-lg px-5">
+        <span class="me-2"></span> Book a Flight
+      </a>
+    }
+  </div>
+</section>
