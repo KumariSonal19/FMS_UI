@@ -1,0 +1,41 @@
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 85vh;">
+  <div class="card fade-in" style="max-width: 450px; width: 100%; padding: 2.5rem;">
+    
+    <div class="text-center mb-4">
+      <div class="mb-3 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        🔓
+      </div>
+      <h3 class="fw-bold">Welcome Back</h3>
+      <p class="text-muted">Enter your credentials to access your account</p>
+    </div>
+
+    @if (error) {
+      <div class="alert alert-danger d-flex align-items-center gap-2 mb-4" style="border-radius: 10px;">
+        <span>⚠️</span> {{ error }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" formControlName="username" 
+               [class.is-invalid]="submitted && f['username'].errors" placeholder="e.g. johndoe">
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" formControlName="password" 
+               [class.is-invalid]="submitted && f['password'].errors" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="loading">
+        @if (loading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+        Sign In
+      </button>
+    </form>
+
+    <div class="text-center">
+      <p class="text-muted small">Don't have an account? <a routerLink="/register" class="text-primary fw-bold text-decoration-none">Create Account</a></p>
+    </div>
+  </div>
+</div>
