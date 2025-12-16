@@ -1,6 +1,42 @@
-# FlightBookingApp
+# Flight Booking UI
+This is a modern and responsive Flight Booking Frontend Application built using Angular with Standalone Components.  
+This application serves as the UI layer for a Microservices-based Flight Booking System, enabling secure authentication, flight search, and user profile management.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+---
+
+## Features
+
+### Authentication
+- User registration and login
+- JWT-based authentication
+
+### Flight Search
+- Search flights by source, destination, and date
+- Prevents duplicate source and destination selection
+- Real-time form validation
+
+### User Experience
+- Fully responsive UI 
+- Glassmorphism-based design
+- Loading indicators 
+
+### Security
+- Route protection using AuthGuard
+- HTTP Interceptors for automatic JWT token attachment
+
+
+## Screenshots
+![Homepage](./Screenshots/Homepage-top.png)  
+
+![Homepage](./Screenshots/Homepage-bottom.png) 
+
+![Rgister](./Screenshots/Register-Page.png)
+![Register](./Screenshots/Register-User.png) 
+![Signin](./Screenshots/SignIn-After-Register.png) 
+![FlightSearch](./Screenshots/Before-FlightSearch.png) 
+![FlightSearch](./Screenshots/After-FlightSearch.png) 
+
+---
 
 ## Development server
 
