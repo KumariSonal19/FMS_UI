@@ -21,6 +21,15 @@
                [class.is-invalid]="submitted && f['username'].errors" placeholder="e.g. test123">
       </div>
 
+      <div *ngIf="submitted && f['username'].errors">
+        <div *ngIf="f['username'].errors['required']">
+          Username is required
+        </div>
+        <div *ngIf="f['username'].errors['minlength']">
+          Username must be at least 3 characters
+        </div>
+      </div>
+      
       <div class="form-group">
         <label class="custom-label">Password</label>
         <input type="password" class="custom-input" formControlName="password" 

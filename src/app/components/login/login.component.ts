@@ -51,12 +51,12 @@ export class LoginComponent implements OnInit{
     this.authService.login(this.f['username'].value, this.f['password'].value)
       .subscribe({
         next: (response) => {
-          console.log('[Login] Login successful:', response);
+          console.log('Login successful:', response);
           this.authService.saveAuthData(response);
           this.router.navigateByUrl(this.returnUrl);
         },
         error: (error) => {
-        console.error('[Login] Login failed:', error);
+        console.error('Login failed:', error);
 
         if (error.status === 400) {
           this.error = error.error?.message || 'User not registered';
@@ -65,7 +65,6 @@ export class LoginComponent implements OnInit{
         } else {
           this.error = 'Login failed. Please try again later.';
         }
-
         this.loading = false;
       }
       });
