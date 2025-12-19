@@ -40,45 +40,46 @@ export class FlightService {
     );
   }
 
-  getFlightById(flightId: string): Observable<Flight> {
-    return this.http.get<Flight>(
-      `${this.flightUrl}/${flightId}`
-    );
-  }
+
+  // getFlightById(flightId: string): Observable<Flight> {
+  //   return this.http.get<Flight>(
+  //     `${this.flightUrl}/${flightId}`
+  //   );
+  // }
 
  
-  getAllFlights(): Observable<Flight[]> {
-    return this.http.get<Flight[]>(
-      `${this.flightUrl}/all`
-    );
-  }
+  // getAllFlights(): Observable<Flight[]> {
+  //   return this.http.get<Flight[]>(
+  //     `${this.flightUrl}/all`
+  //   );
+  // }
+ 
+  bookFlight(flightId: string, bookingDetails: any): Observable<string> {
+  return this.http.post(
+    `${this.bookingUrl}/flight/${flightId}`,
+    bookingDetails,
+    { responseType: 'text' }
+  );
+}
 
  
-  bookFlight(flightId: string, bookingDetails: any): Observable<any> {
-    return this.http.post(
-      `${this.bookingUrl}/flight/${flightId}`,
-      bookingDetails
-    );
-  }
-
- 
-  getBookingByPnr(pnr: string): Observable<any> {
-    return this.http.get(
-      `${this.bookingUrl}/ticket/${pnr}`
-    );
-  }
+  // getBookingByPnr(pnr: string): Observable<any> {
+  //   return this.http.get(
+  //     `${this.bookingUrl}/ticket/${pnr}`
+  //   );
+  // }
 
   
-  getBookingHistory(email: string): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${this.bookingUrl}/history/${email}`
-    );
-  }
+  // getBookingHistory(email: string): Observable<any[]> {
+  //   return this.http.get<any[]>(
+  //     `${this.bookingUrl}/history/${email}`
+  //   );
+  // }
 
  
-  cancelBooking(pnr: string): Observable<any> {
-    return this.http.delete(
-      `${this.bookingUrl}/cancel/${pnr}`
-    );
-  }
+  // cancelBooking(pnr: string): Observable<any> {
+  //   return this.http.delete(
+  //     `${this.bookingUrl}/cancel/${pnr}`
+  //   );
+  // }
 }

@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   loading = false;
   submitted = false;
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/search';
   }
 
   get f() {
@@ -56,10 +56,21 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl(this.returnUrl);
         },
         error: (error) => {
-          console.error('[Login] Login failed:', error);
-          this.error = error.error?.message || error.message || 'Login failed. Please try again.';
-          this.loading = false;
+        console.error('[Login] Login failed:', error);
+
+        if (error.status === 400) {
+          this.error = error.error?.message || 'User not registered';
+        } else if (error.status === 401) {
+          this.error = 'Invalid username or password';
+        } else {
+          this.error = 'Login failed. Please try again later.';
         }
+
+        this.loading = false;
+      }
       });
   }
+
+  
+
 }

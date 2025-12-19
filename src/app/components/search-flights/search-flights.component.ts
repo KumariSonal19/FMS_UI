@@ -1,13 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router'; 
 import { FlightService, Flight } from '../../services/flight.service';
 
 @Component({
   selector: 'app-search-flights',
   templateUrl: './search-flights.component.html',
+  styleUrls: ['./search-flights.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe]
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, RouterLink]
 })
 export class SearchFlightsComponent implements OnInit {
   searchForm!: FormGroup;
@@ -29,7 +31,8 @@ export class SearchFlightsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private flightService: FlightService,
-    private cd: ChangeDetectorRef 
+    private cd: ChangeDetectorRef,
+    private router: Router 
   ) { }
 
   ngOnInit() {
@@ -72,20 +75,19 @@ export class SearchFlightsComponent implements OnInit {
         console.log('[Search] Response received:', data);
         this.flights = data || [];
         this.loading = false;
-
         this.cd.detectChanges(); 
       },
       error: (err) => {
         console.error('[Search] Error:', err);
-        this.error = 'Search failed. Check console for details.';
+        this.error = 'Search failed';
         this.loading = false;
-      
         this.cd.detectChanges();
       }
     });
   }
 
   bookFlight(flight: Flight) {
-    alert(`Initiating booking for Flight ${flight.flightId}`);
+    console.log('Navigating to book flight:', flight.flightId);
+    this.router.navigate(['/book', flight.flightId],{queryParams:{journeyDate:flight.departureTime}}); 
   }
 }

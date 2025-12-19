@@ -14,7 +14,6 @@
 }
 
 .nav-link {
-  /* color: #ffffff !important; */
   margin: 0 8px;
   transition: all 0.3s ease;
   position: relative;
@@ -51,6 +50,7 @@
 
 .dropdown-item.text-danger:hover {
   background-color: #dc3545;
+  color: #ffffff !important;
 }
 
 main {

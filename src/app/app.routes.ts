@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { SearchFlightsComponent } from './components/search-flights/search-flights.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { BookFlightComponent } from './components/book-flight/book-flight'; 
 
 export const routes: Routes = [
   {
@@ -21,14 +22,17 @@ export const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'dashboard',
-    component: SearchFlightsComponent,
-    canActivate: [AuthGuard]
+    path: 'search',
+    component: SearchFlightsComponent
   },
   {
     path: 'profile',
     component: ProfileComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'book/:flightId', 
+    component: BookFlightComponent
   },
   {
     path: '',

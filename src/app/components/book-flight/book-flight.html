@@ -1,0 +1,50 @@
+<h2>Confirm Booking</h2>
+
+<!-- <label>Flight ID:</label><br>
+<input type="text" [(ngModel)]="booking.flightId" readonly><br><br> -->
+
+<!-- <label>Your Name:</label><br> -->
+<!-- <input type="text" [(ngModel)]="booking.userName"><br><br> -->
+
+<label>Your Email:</label><br>
+<input type="email" [(ngModel)]="booking.userEmail"><br><br>
+
+<!-- <label>Journey Date:</label><br> -->
+<!-- <input type="date" [(ngModel)]="booking.journeyDate"><br><br> -->
+
+<label>Number of Seats:</label><br>
+<input type="number"
+       min="1"
+       [(ngModel)]="booking.numberOfSeats"
+       (change)="updatePassengerCount()"><br><br>
+
+<hr>
+
+<div *ngFor="let passenger of booking.passengers; let i = index">
+  <h3>Passenger {{ i + 1 }}</h3>
+
+  <label>Name:</label><br>
+  <input type="text" [(ngModel)]="passenger.name"><br><br>
+
+  <label>Age:</label><br>
+  <input type="number" [(ngModel)]="passenger.age"><br><br>
+
+  <label>Gender:</label><br>
+  <input type="radio" value="MALE" [name]="'g'+i" [(ngModel)]="passenger.gender"> Male
+  <input type="radio" value="FEMALE" [name]="'g'+i" [(ngModel)]="passenger.gender"> Female
+  <br><br>
+
+  <label>Seat Number:</label><br>
+  <input type="text" [(ngModel)]="passenger.seatNumber"><br><br>
+
+  <label>Meal Type:</label><br>
+  <select [(ngModel)]="passenger.mealType">
+    <option value="">Select</option>
+    <option value="VEG">Veg</option>
+    <option value="NON_VEG">Non-Veg</option>
+  </select>
+
+  <hr>
+</div>
+
+<button (click)="bookFlight()">Confirm & Book</button>

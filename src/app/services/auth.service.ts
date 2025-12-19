@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.authUrl}/signup`, { username, email, password },{ responseType: 'text' as 'json' });
+    return this.http.post(`${this.authUrl}/signup`,{ username, email, password },{ responseType: 'text' as 'json' });
   }
 
   login(username: string, password: string): Observable<any> {
@@ -31,10 +31,10 @@ export class AuthService {
   }
 
   saveAuthData(response: any): void {
-    if (response.token) {
-      this.tokenService.saveToken(response.token);
-      const user = this.decodeToken(response.token);
-      this.currentUserSubject.next(user);
+  if (response.token) {
+    this.tokenService.saveToken(response.token);
+    const user = this.decodeToken(response.token);
+    this.currentUserSubject.next(user);
     }
   }
 
@@ -42,7 +42,6 @@ export class AuthService {
     this.tokenService.clearAuth();
     this.currentUserSubject.next(null);
   }
-
   isAuthenticated(): boolean {
     return this.tokenService.hasToken();
   }
@@ -51,17 +50,22 @@ export class AuthService {
     const token = this.tokenService.getToken();
     return token ? this.decodeToken(token) : null;
   }
+  getUserEmail(): string {
+    return sessionStorage.getItem('userEmail') || '';
+  }
 
   private decodeToken(token: string): any {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return {
         username: payload.sub, 
-        roles: payload.roles || []
+        roles: payload.roles || [],
+        email: payload.email  
       };
     } catch (e) {
       console.error('Error decoding token', e);
       return null;
     }
   }
+
 }

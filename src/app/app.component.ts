@@ -41,4 +41,8 @@ export class AppComponent implements OnInit {
       this.username = user?.username || 'User';
     }
   }
+  logout(): void {
+  this.authService.logout();        
+  this.router.navigate(['/home']); 
+}
 }
