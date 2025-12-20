@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms'; 
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FlightService } from '../../services/flight.service';
@@ -8,28 +8,24 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-book-flight',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './book-flight.html',
+  styleUrls: ['./book-flight.css']
 })
 export class BookFlightComponent implements OnInit {
-
+  success = false;
+  error = '';
+  loading = false;
+  successMessage = '';
+  generatedPnr = ''; 
   booking = {
     flightId: '',
     userName: '',
     userEmail: '',
-    numberOfSeats: 1,
-    selectedSeats: [] as string[],
-    mealPreference: '',
     journeyDate: '',
-
+    numberOfSeats: 1,
     passengers: [
-      {
-        name: '',
-        age: null,
-        gender: '',
-        seatNumber: '',
-        mealType: ''
-      }
+      { name: '', age: 1, gender: 'MALE', seatNumber: '', mealType: 'VEG' }
     ]
   };
 
@@ -37,60 +33,87 @@ export class BookFlightComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private flightService: FlightService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-  this.booking.flightId=this.route.snapshot.paramMap.get('flightId') || '';
+  ngOnInit() {
+    this.booking.flightId = this.route.snapshot.paramMap.get('flightId') || '';
+    this.route.queryParams.subscribe(params => {
+      this.booking.journeyDate = params['date'] || new Date().toISOString().split('T')[0];
+    });
+    const user = this.authService.getUser();
 
-  this.booking.journeyDate=this.route.snapshot.queryParamMap.get('journeyDate') || '';
-
-  const user = this.authService.getCurrentUser();
-  if (user) {
-    this.booking.userName = user.username; 
-  }
-}
-
-
-  updatePassengerCount(): void {
-    const diff = this.booking.numberOfSeats - this.booking.passengers.length;
-
-    if (diff > 0) {
-      for (let i = 0; i < diff; i++) {
-        this.booking.passengers.push({
-          name: '',
-          age: null,
-          gender: '',
-          seatNumber: '',
-          mealType: ''
-        });
-      }
-    } else if (diff < 0) {
-      this.booking.passengers.splice(diff);
+    if (user) {
+      this.booking.userName = user.username || '';
+      this.booking.userEmail = user.email || '';
     }
   }
 
-  bookFlight(): void {
-  this.booking.selectedSeats=this.booking.passengers.map(p => p.seatNumber);
-
-  this.booking.mealPreference=this.booking.passengers[0]?.mealType || '';
-
-  console.log('PAYLOAD:', this.booking);
-
-  this.flightService.bookFlight(
-  this.booking.flightId,
-  this.booking
-).subscribe({
-  next: (response: string) => {
-    console.log('Server response:', response);
-    alert(response); 
-    this.router.navigate(['/home']);
-  },
-  error: err => {
-    console.error(err);
-    alert('Booking Failed');
+  updatePassengerCount() {
+    const current = this.booking.passengers.length;
+    const target = this.booking.numberOfSeats;
+    if (target > current) {
+      for (let i = current; i < target; i++) {
+        this.booking.passengers.push({ name: '', age: 1, gender: 'MALE', seatNumber: '', mealType: 'VEG' });
+      }
+    } else if (target < current) {
+      this.booking.passengers = this.booking.passengers.slice(0, target);
+    }
   }
-});
 
-}
+  confirmBooking() {
+    this.loading = true;
+    this.error = '';
+    const backendPayload = {
+      flightId: this.booking.flightId,
+      userName: this.booking.userName,
+      userEmail: this.booking.userEmail,
+      numberOfSeats: this.booking.numberOfSeats,
+      passengers: this.booking.passengers,
+      journeyDate: this.booking.journeyDate,
+      selectedSeats: this.booking.passengers.map(p => p.seatNumber),
+      mealPreference: this.booking.passengers[0].mealType
+    };
+
+    console.log('Sending Booking Payload:', backendPayload);
+
+    this.flightService.bookFlight(this.booking.flightId, backendPayload).subscribe({
+      next: (res: any) => {
+        console.log('Booking Success:', res);
+        this.loading = false;
+        this.success = true;
+        this.generatedPnr = '';
+        
+        if (typeof res === 'object' && res.pnr) {
+          this.generatedPnr = res.pnr;
+        } else if (typeof res === 'string') {
+          const match = res.match(/(PNR[a-zA-Z0-9]+)/);
+          if (match) {
+            this.generatedPnr = match[0];
+          }
+        }
+
+        this.successMessage = 'Your flight has been successfully booked.';
+        this.cd.detectChanges();
+        const btn = document.getElementById('openSuccessModalBtn');
+        if (btn) {
+          btn.click();
+        }
+      },
+      error: (err) => {
+        console.error('Booking Error:', err);
+        this.loading = false;
+        const msg = err.error && err.error.message ? err.error.message :
+                    (typeof err.error === 'string' ? err.error : 'Server Error');
+        this.error = 'Booking Failed: ' + msg;
+      }
+    });
+  }
+
+  navigateToHome() {
+    setTimeout(() => {
+      this.router.navigate(['/home']);
+    }, 300);
+  }
 }

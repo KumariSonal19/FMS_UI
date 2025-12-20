@@ -1,50 +1,123 @@
-<h2>Confirm Booking</h2>
+<div class="booking-container">
+  <div class="booking-card">
+    <div class="card-header">
+      <h4>Complete Your Booking</h4>
+    </div>
+    
+    <div class="card-body">
+      
+      <div *ngIf="error" class="alert alert-error">
+        <div>
+          <strong>Booking Failed</strong>
+          <div>{{ error }}</div>
+        </div>
+      </div>
 
-<!-- <label>Flight ID:</label><br>
-<input type="text" [(ngModel)]="booking.flightId" readonly><br><br> -->
+      <div class="form-grid">
+         <div class="form-group">
+           <label>Flight ID</label>
+           <input type="text" class="read-only" [value]="booking.flightId" readonly>
+         </div>
 
-<!-- <label>Your Name:</label><br> -->
-<!-- <input type="text" [(ngModel)]="booking.userName"><br><br> -->
+         <div class="form-group">
+           <label>Journey Date</label>
+           <input type="date" class="read-only" [ngModel]="booking.journeyDate" readonly name="jDate">
+         </div>
 
-<label>Your Email:</label><br>
-<input type="email" [(ngModel)]="booking.userEmail"><br><br>
+         <div class="form-group">
+           <label>Booker Name</label>
+           <input type="text" class="read-only" [value]="booking.userName" readonly>
+         </div>
 
-<!-- <label>Journey Date:</label><br> -->
-<!-- <input type="date" [(ngModel)]="booking.journeyDate"><br><br> -->
+         <div class="form-group">
+           <label>Booker Email</label>
+           <input type="email" class="read-only" [value]="booking.userEmail" readonly>
+         </div>
 
-<label>Number of Seats:</label><br>
-<input type="number"
-       min="1"
-       [(ngModel)]="booking.numberOfSeats"
-       (change)="updatePassengerCount()"><br><br>
+         <div class="form-group full-width">
+           <label>Number of Seats</label>
+           <input type="number" min="1" max="6" [(ngModel)]="booking.numberOfSeats" (change)="updatePassengerCount()">
+         </div>
+      </div>
 
-<hr>
+      <hr class="section-divider">
+      <h5>Passenger Details</h5>
 
-<div *ngFor="let passenger of booking.passengers; let i = index">
-  <h3>Passenger {{ i + 1 }}</h3>
+      <div class="passenger-list">
+        <div *ngFor="let p of booking.passengers; let i = index" class="passenger-card">
+           <h6 class="passenger-title">Passenger {{i + 1}}</h6>
+           
+           <div class="passenger-grid">
+             <div class="form-group">
+               <label>Name</label>
+               <input type="text" [(ngModel)]="p.name">
+             </div>
+             <div class="form-group">
+               <label>Age</label>
+               <input type="number" [(ngModel)]="p.age">
+             </div>
+             <div class="form-group">
+               <label>Seat</label>
+               <input type="text" [(ngModel)]="p.seatNumber" placeholder="12A">
+             </div>
+           </div>
 
-  <label>Name:</label><br>
-  <input type="text" [(ngModel)]="passenger.name"><br><br>
+           <div class="passenger-options">
+             <div class="form-group">
+               <label>Gender</label>
+               <div class="radio-group">
+                 <div class="radio-item">
+                   <input type="radio" [name]="'g'+i" value="MALE" [(ngModel)]="p.gender">
+                   <span>Male</span>
+                 </div>
+                 <div class="radio-item">
+                   <input type="radio" [name]="'g'+i" value="FEMALE" [(ngModel)]="p.gender">
+                   <span>Female</span>
+                 </div>
+               </div>
+             </div>
 
-  <label>Age:</label><br>
-  <input type="number" [(ngModel)]="passenger.age"><br><br>
+             <div class="form-group">
+               <label>Meal Preference</label>
+               <select [(ngModel)]="p.mealType">
+                 <option value="VEG">Vegetarian</option>
+                 <option value="NON_VEG">Non-Vegetarian</option>
+               </select>
+             </div>
+           </div>
+        </div>
+      </div>
 
-  <label>Gender:</label><br>
-  <input type="radio" value="MALE" [name]="'g'+i" [(ngModel)]="passenger.gender"> Male
-  <input type="radio" value="FEMALE" [name]="'g'+i" [(ngModel)]="passenger.gender"> Female
-  <br><br>
+      <button class="btn-submit" (click)="confirmBooking()" [disabled]="loading">
+         {{ loading ? 'Processing...' : 'Confirm & Pay' }}
+      </button>
 
-  <label>Seat Number:</label><br>
-  <input type="text" [(ngModel)]="passenger.seatNumber"><br><br>
-
-  <label>Meal Type:</label><br>
-  <select [(ngModel)]="passenger.mealType">
-    <option value="">Select</option>
-    <option value="VEG">Veg</option>
-    <option value="NON_VEG">Non-Veg</option>
-  </select>
-
-  <hr>
+    </div> 
+  </div>
 </div>
 
-<button (click)="bookFlight()">Confirm & Book</button>
+<button id="openSuccessModalBtn" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#successModal"></button>
+
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered clean-modal">
+    <div class="modal-content border-0 p-4">
+      
+      <div class="modal-body text-center">
+        
+
+        <h4 class="fw-bold text-dark mb-1">Booking Confirmed!</h4>
+        <p class="text-muted small mb-4">{{ successMessage }}</p>
+
+        <div class="pnr-box mb-4" *ngIf="generatedPnr">
+          <span class="text-uppercase text-muted small fw-bold">Booking Reference (PNR)</span>
+          <h2 class="text-primary fw-bold m-0 tracking-wide">{{ generatedPnr }}</h2>
+        </div>
+
+        <button type="button" class="btn btn-dark w-100 rounded-pill py-2" data-bs-dismiss="modal" (click)="navigateToHome()">
+          Back to Home
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
