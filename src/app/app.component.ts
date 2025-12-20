@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
     this.authService.currentUser$.subscribe(() => {
       this.updateAuthStatus();
     });
-
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -37,12 +36,13 @@ export class AppComponent implements OnInit {
   private updateAuthStatus(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      const user = this.authService.getCurrentUser();
+      const user = this.authService.getUser(); 
       this.username = user?.username || 'User';
     }
   }
+
   logout(): void {
-  this.authService.logout();        
-  this.router.navigate(['/home']); 
-}
+    this.authService.logout();
+    this.router.navigate(['/home']);
+  }
 }
