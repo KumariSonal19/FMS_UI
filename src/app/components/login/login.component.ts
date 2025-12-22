@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,18 +11,20 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink]
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
   submitted = false;
   error = '';
   returnUrl: string = '';
+  showExpirationModal = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -30,7 +32,6 @@ export class LoginComponent implements OnInit{
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
-
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/search';
   }
 
@@ -41,23 +42,49 @@ export class LoginComponent implements OnInit{
   onSubmit(): void {
     this.submitted = true;
     this.error = '';
+
     if (this.loginForm.invalid) {
       return;
     }
 
     this.loading = true;
-    console.log('[Login] Attempting login for user:', this.f['username'].value);
+    console.log('Attempting login for user:', this.f['username'].value);
 
-    this.authService.login(this.f['username'].value, this.f['password'].value)
-      .subscribe({
-        next: (response) => {
-          console.log('Login successful:', response);
-          this.authService.saveAuthData(response);
+    const loginData = {
+      username: this.f['username'].value,
+      password: this.f['password'].value
+    };
+
+    this.authService.login(loginData).subscribe({
+      next: (response) => {
+        console.log('Login successful:', response);
+        console.log('FULL LOGIN RESPONSE:', response);
+        console.log('PASSWORD EXPIRED FLAG:', response.passwordExpired);
+        
+        window.sessionStorage.setItem('auth-token', response.token);
+        window.sessionStorage.setItem('auth-user', JSON.stringify(response));
+
+        if (response.passwordExpired) {
+          this.showExpirationModal = true;
+          this.loading = false;
+
+        } 
+       
+        else if (this.authService.isAdmin()) {
+          console.log('User is Admin. Redirecting to Dashboard...');
+          this.router.navigate(['/admin-dashboard']);
+          this.loading = false;
+        } 
+       
+        else {
+          console.log('User is Customer. Redirecting to requested page...');
           this.router.navigateByUrl(this.returnUrl);
-        },
-        error: (error) => {
+          this.loading = false;
+        }
+        this.cd.detectChanges();
+      },
+      error: (error) => {
         console.error('Login failed:', error);
-
         if (error.status === 400) {
           this.error = error.error?.message || 'User not registered';
         } else if (error.status === 401) {
@@ -67,9 +94,9 @@ export class LoginComponent implements OnInit{
         }
         this.loading = false;
       }
-      });
+    });
   }
-
-  
-
+  navigateToUpdate() {
+    this.router.navigate(['/profile'], { queryParams: { expired: 'true' } });
+  }
 }
