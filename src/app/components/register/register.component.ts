@@ -45,15 +45,17 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    console.log('[Register] Attempting registration for:', this.f['username'].value);
+    console.log('Attempting registration for:', this.f['username'].value);
 
-    this.authService.register(
-      this.f['username'].value,
-      this.f['email'].value,
-      this.f['password'].value
-    ).subscribe({
+    const signupRequest = {
+      username: this.f['username'].value,
+      email: this.f['email'].value,
+      password: this.f['password'].value
+    };
+
+    this.authService.register(signupRequest).subscribe({
       next: (response) => {
-        console.log('[Register] Registration successful:', response);
+        console.log('Registration successful:', response);
         this.success = true;
         this.loading = false;
 
@@ -62,8 +64,8 @@ export class RegisterComponent implements OnInit {
         }, 2000);
       },
       error: (error) => {
-        console.error('[Register] Registration failed:', error);
-        this.error = error.error?.message || error.message || 'Registration failed. Please try again.';
+        console.error('Registration failed:', error);
+        // this.error = error.error?.message || error.message || 'Registration failed. Please try again.';
         this.loading = false;
       }
     });
