@@ -1,0 +1,66 @@
+<div class="flight-container">
+  <div class="flight-card">
+    <div class="card-header">
+      <h4>Add Flights</h4>
+    </div>
+    
+    <div class="card-body">
+      <h5 class="section-title">Enter Flight Details</h5>
+
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="addFlight()" class="flight-form">
+        <div class="form-grid">
+          
+          <div class="form-group group-third">
+            <label>Airline Code</label>
+            <input type="text" [(ngModel)]="flight.airlineCode" name="acode" placeholder="e.g. IND" required>
+          </div>
+          <div class="form-group group-third">
+            <label>Airline Name</label>
+            <input type="text" [(ngModel)]="flight.airlineName" name="aname" placeholder="e.g. Indigo" required>
+          </div>
+          <div class="form-group group-third">
+            <label>Aircraft Type</label>
+            <input type="text" [(ngModel)]="flight.aircraft" name="aircraft" placeholder="e.g. A320" required>
+          </div>
+
+          <div class="form-group group-half">
+            <label>Source (From)</label>
+            <input type="text" [(ngModel)]="flight.source" name="src" placeholder="e.g. BLR" required>
+          </div>
+          <div class="form-group group-half">
+            <label>Destination (To)</label>
+            <input type="text" [(ngModel)]="flight.destination" name="dest" placeholder="e.g. CCU" required>
+          </div>
+
+          <div class="form-group group-half">
+            <label>Departure Time</label>
+            <input type="datetime-local" [(ngModel)]="flight.departureTime" name="dept" required>
+          </div>
+          <div class="form-group group-half">
+            <label>Arrival Time</label>
+            <input type="datetime-local" [(ngModel)]="flight.arrivalTime" name="arr" required>
+          </div>
+
+          <div class="form-group group-half">
+            <label>Price (₹)</label>
+            <input type="number" [(ngModel)]="flight.price" name="price" required>
+          </div>
+          <div class="form-group group-half">
+            <label>Total Seats</label>
+            <input type="number" [(ngModel)]="flight.totalSeats" name="seats" required>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-submit">Add Inventory</button>
+      </form>
+    </div>
+  </div>
+</div>
