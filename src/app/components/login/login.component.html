@@ -1,15 +1,16 @@
 <div class="login-page-wrapper">
   <div class="login-card fade-in">
     <div class="login-header">
-      <div>
-        </div>
+      <div class="icon-circle">
+        <i class="bi bi-person-circle"></i>
+      </div>
       <h3 class="login-title">Welcome Back</h3>
       <p class="login-subtitle">Enter your credentials to access your account</p>
     </div>
 
     @if (error) {
       <div class="error-alert">
-        <span></span> {{ error }}
+        <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
       </div>
     }
 
@@ -20,13 +21,9 @@
                [class.is-invalid]="submitted && f['username'].errors" placeholder="e.g. test123">
       </div>
 
-      <div *ngIf="submitted && f['username'].errors">
-        <div *ngIf="f['username'].errors['required']">
-          Username is required
-        </div>
-        <div *ngIf="f['username'].errors['minlength']">
-          Username must be at least 3 characters
-        </div>
+      <div *ngIf="submitted && f['username'].errors" class="text-danger small mb-2">
+        <div *ngIf="f['username'].errors['required']">Username is required</div>
+        <div *ngIf="f['username'].errors['minlength']">Username must be at least 3 characters</div>
       </div>
       
       <div class="form-group">
@@ -44,21 +41,5 @@
     <div class="login-footer">
       <p class="footer-text">Don't have an account? <a routerLink="/register" class="link-primary">Create Account</a></p>
     </div>
-  </div>
-</div>
-
-<div class="modal-overlay" *ngIf="showExpirationModal">
-  <div class="modal-content fade-in-up">
-    <div class="modal-icon">
-      <i class="bi bi-shield-exclamation"></i>
-    </div>
-    <h3>Password Expired</h3>
-    <p>
-      Your password hasn't been changed for a while. 
-      For your security, you must update it now to continue.
-    </p>
-    <button class="btn-update" (click)="navigateToUpdate()">
-      Update Password Now
-    </button>
   </div>
 </div>
