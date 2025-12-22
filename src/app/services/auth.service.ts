@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators'; 
 import { environment } from '../../environments/environment';
 import { TokenService } from './token.service';
 
@@ -8,7 +9,7 @@ import { TokenService } from './token.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private authUrl = environment.authUrl;
+  private authUrl = environment.authUrl; 
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -16,56 +17,66 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService
   ) {
-    const user = this.getCurrentUser();
+    const user = this.getUser();
     if (user) {
       this.currentUserSubject.next(user);
     }
   }
 
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.authUrl}/signup`,{ username, email, password },{ responseType: 'text' as 'json' });
+  login(credentials: any): Observable<any> {
+    return this.http.post(this.authUrl + '/signin', {
+      username: credentials.username,
+      password: credentials.password
+    }).pipe(
+      tap((data: any) => {
+        window.sessionStorage.setItem('auth-token', data.token); 
+        window.sessionStorage.setItem('auth-user', JSON.stringify(data));
+        this.currentUserSubject.next(data);
+      })
+    );
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.authUrl}/signin`, { username, password });
-  }
-
-  saveAuthData(response: any): void {
-  if (response.token) {
-    this.tokenService.saveToken(response.token);
-    const user = this.decodeToken(response.token);
-    this.currentUserSubject.next(user);
-    }
+  register(signupRequest: any): Observable<any> {
+    return this.http.post(this.authUrl + '/signup', signupRequest, { responseType: 'text' });
   }
 
   logout(): void {
-    this.tokenService.clearAuth();
+    window.sessionStorage.clear(); 
     this.currentUserSubject.next(null);
+    window.location.reload(); 
   }
+
   isAuthenticated(): boolean {
-    return this.tokenService.hasToken();
+    return !!window.sessionStorage.getItem('auth-token');
   }
 
-  getCurrentUser(): any {
-    const token = this.tokenService.getToken();
-    return token ? this.decodeToken(token) : null;
-  }
-  getUserEmail(): string {
-    return sessionStorage.getItem('userEmail') || '';
-  }
-
-  private decodeToken(token: string): any {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return {
-        username: payload.sub, 
-        roles: payload.roles || [],
-        email: payload.email  
-      };
-    } catch (e) {
-      console.error('Error decoding token', e);
-      return null;
+  getUser(): any {
+    const userStr = window.sessionStorage.getItem('auth-user');
+    if (userStr) {
+      return JSON.parse(userStr);
     }
+    return null;
   }
 
+  getUserEmail(): string {
+    const user = this.getUser();
+    return user ? user.email : '';
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUser();
+    if (user && user.roles) {
+      return user.roles.includes('ROLE_ADMIN'); 
+    }
+    return false;
+  }
+
+    
+  changePassword(username: string, oldPass: string, newPass: string): Observable<any> {
+    return this.http.post(this.authUrl + '/change-password', {
+      username: username,
+      oldPassword: oldPass,
+      newPassword: newPass
+    });
+  }
 }
