@@ -1,56 +1,115 @@
-<div>
-  <div>
-    <h2>My Bookings</h2>
-    <a routerLink="/search">Book New Flight</a>
+<div class="bookings-container fade-in">
+  
+  <div class="page-header">
+    <h3 class="title">My Bookings</h3>
+    <a routerLink="/search" class="btn-primary">Book New Flight</a>
   </div>
 
-  <div *ngIf="loading">
-    <p>Loading your tickets...</p>
+  <div *ngIf="loading" class="state-message">
+    <div class="spinner"></div>
+    <p>Loading your bookings...</p>
   </div>
 
-  <div *ngIf="error">
+  <div *ngIf="error" class="alert-box alert-error">
     {{ error }}
   </div>
 
-  <div *ngIf="!loading && bookings.length === 0">
-    <h4>No bookings found yet.</h4>
-    <p>Ready to travel?</p>
-    <a routerLink="/search">Search Flights</a>
+  <div *ngIf="!loading && bookings.length === 0" class="state-message empty-state">
+    <h5>No bookings found.</h5>
+    <p>It looks like you haven't booked any flights yet.</p>
+    <a routerLink="/search" class="btn-outline">Search Flights</a>
   </div>
 
-  <div *ngIf="!loading && bookings.length > 0">
-    <table>
-      <thead>
-        <tr>
-          <th>PNR</th>
-          <th>Flight</th>
-          <th>Date</th>
-          <th>Passengers</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+  <div *ngIf="!loading && bookings.length > 0" class="bookings-list">
+    
+    <div *ngFor="let b of bookings" class="booking-card">
+      
+      <div class="card-header">
+        <div class="header-info">
+          <span class="flight-id">{{ b.flightId }}</span>
+          <span class="journey-date">{{ b.journeyDate | date:'mediumDate' }}</span>
+        </div>
+        <span class="status-badge" 
+              [ngClass]="{
+                'status-confirmed': b.bookingStatus === 'CONFIRMED', 
+                'status-cancelled': b.bookingStatus === 'CANCELLED', 
+                'status-refunded': b.bookingStatus === 'REFUNDED'
+              }">
+          {{ b.bookingStatus }}
+        </span>
+      </div>
 
-      <tbody>
-        <tr *ngFor="let b of bookings">
-          <td>{{ b.pnr }}</td>
-          <td>{{ b.flightId }}</td>
-          <td>{{ b.journeyDate | date:'mediumDate' }}</td>
-          <td>{{ b.numberOfSeats }}</td>
-          <td>{{ b.bookingStatus }}</td>
-          <td>
-            <button
-              *ngIf="b.bookingStatus !== 'CANCELLED'"
-              (click)="cancelTicket(b.pnr)">
-              Cancel
-            </button>
+      <div class="card-body">
+        
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="label">PNR:</span>
+            <span class="value">{{ b.pnr }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Price:</span>
+            <span class="value price">₹{{ b.totalPrice }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Booked By:</span>
+            <span class="value">{{ b.userName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Meal:</span>
+            <span class="value">{{ b.mealPreference || 'None' }}</span>
+          </div>
+        </div>
 
-            <span *ngIf="b.bookingStatus === 'CANCELLED'">
-              Refunded
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <div class="passenger-section" *ngIf="b.passengers && b.passengers.length > 0">
+          <table class="passenger-table">
+            <thead>
+              <tr>
+                <th>Passengers</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th class="text-right">Seat</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of b.passengers; let i = index">
+                <td class="name-cell">{{ p.name }}</td> 
+                <td>{{ p.age }}</td>
+                <td>{{ p.gender | slice:0:1 }}</td> 
+                <td class="text-right">
+                  <span class="seat-badge">{{ b.selectedSeats[i] || '-' }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <button *ngIf="b.bookingStatus !== 'CANCELLED' && b.bookingStatus !== 'REFUNDED'" 
+                class="btn-danger-outline" 
+                (click)="initiateCancel(b.pnr)">
+          Cancel Booking
+        </button>
+        
+        <span *ngIf="b.bookingStatus === 'CANCELLED' || b.bookingStatus === 'REFUNDED'" 
+              class="refund-text">
+          Ticket Refunded
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showCancelModal">
+  <div class="modal-content fade-in-up">
+    <h3>Cancel Booking?</h3>
+    <p>Are you sure you want to cancel this flight? This action cannot be undone.</p>
+    
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="closeModal()">No, Keep it</button>
+      <button class="btn-danger-confirm" (click)="confirmCancel()">Yes, Cancel Ticket</button>
+    </div>
   </div>
 </div>

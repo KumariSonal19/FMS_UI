@@ -17,6 +17,8 @@ export class MyBookingsComponent implements OnInit {
   loading = true;
   error = '';
   currentUserEmail = ''; 
+  showCancelModal = false;
+  pnrToCancel: string | null = null;
 
   constructor(
     private flightService: FlightService,
@@ -56,15 +58,28 @@ export class MyBookingsComponent implements OnInit {
     });
   }
 
-  cancelTicket(pnr: string) {
-    if (!confirm('Are you sure you want to cancel this ticket?')) return;
-    this.flightService.cancelBooking(pnr).subscribe({
+  initiateCancel(pnr: string) {
+    this.pnrToCancel = pnr;
+    this.showCancelModal = true;
+    this.cd.detectChanges(); 
+  }
+
+  closeModal() {
+    this.showCancelModal = false;
+    this.pnrToCancel = null;
+    this.cd.detectChanges();
+  }
+
+  confirmCancel() {
+    if (!this.pnrToCancel) return;
+    this.flightService.cancelBooking(this.pnrToCancel).subscribe({
       next: (response) => {
-        alert('Ticket Cancelled Successfully');
+        this.closeModal();
         this.loadBookings(); 
       },
       error: (err) => {
-        alert('Cancellation Failed: ' + (err.error?.message || 'Server Error'));
+        console.error("Cancellation Failed", err);
+        this.closeModal();
       }
     });
   }
