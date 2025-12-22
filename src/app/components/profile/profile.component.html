@@ -15,6 +15,53 @@
       }
     </div>
 
+    @if (showPasswordForm) {
+      <div class="password-section fade-in">
+        
+        <div *ngIf="message" class="alert-success">
+          <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+        </div>
+        
+        <div *ngIf="errorMessage" class="alert-error">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+        </div>
+
+        <form (ngSubmit)="onChangePassword()" class="password-form">
+          
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" 
+                   [(ngModel)]="passwordData.currentPassword" 
+                   name="currentPass" 
+                   placeholder="Enter your old password" 
+                   class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" 
+                   [(ngModel)]="passwordData.newPassword" 
+                   name="newPass" 
+                   placeholder="Enter new password (min 6 chars)" 
+                   class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" 
+                   [(ngModel)]="passwordData.confirmPassword" 
+                   name="confirmPass" 
+                   placeholder="Re-enter new password" 
+                   class="form-input" required>
+          </div>
+
+          <button type="submit" class="btn-submit-pass">Update Password</button>
+        </form>
+      </div>
+    }
+    <button class="btn-change-pass mb-4" (click)="togglePasswordForm()">
+          {{ showPasswordForm ? 'Cancel':'Change Password' }}
+    </button>
     <div class="card-footer">
       <button class="btn-logout" (click)="logout()">
         Sign Out
