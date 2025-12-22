@@ -9,7 +9,7 @@ import { FlightService, Flight } from '../../services/flight.service';
   templateUrl: './search-flights.component.html',
   styleUrls: ['./search-flights.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule, DatePipe]
 })
 export class SearchFlightsComponent implements OnInit {
   searchForm!: FormGroup;
@@ -18,6 +18,7 @@ export class SearchFlightsComponent implements OnInit {
   searched = false;
   error = '';
   submitted = false;
+  minDate: string='';
 
   airports = [
     { code: 'DEL', name: 'Delhi (DEL)' },
@@ -29,19 +30,22 @@ export class SearchFlightsComponent implements OnInit {
   ];
 
   constructor(
-    private fb: FormBuilder,
+    private formbuilder: FormBuilder,
     private flightService: FlightService,
     private cd: ChangeDetectorRef,
     private router: Router 
   ) { }
 
   ngOnInit() {
-    this.searchForm = this.fb.group({
+    const today = new Date();
+    this.minDate = today.toISOString().split('T')[0];
+    this.searchForm = this.formbuilder.group({
       source: ['', Validators.required],
       destination: ['', Validators.required],
       departureDate: ['', Validators.required],
       journeyType: ['ONE_WAY']
-    });
+    }
+  );
   }
 
   get f() { return this.searchForm.controls; }
@@ -87,7 +91,10 @@ export class SearchFlightsComponent implements OnInit {
   }
 
   bookFlight(flight: Flight) {
+    const dateFromSearch = this.f['departureDate'].value; 
     console.log('Navigating to book flight:', flight.flightId);
-    this.router.navigate(['/book', flight.flightId],{queryParams:{journeyDate:flight.departureTime}}); 
+    this.router.navigate(['/book', flight.flightId], {
+      queryParams: { date: dateFromSearch } 
+    }); 
   }
 }

@@ -36,7 +36,7 @@
 
           <div class="form-group-last">
             <label class="custom-label">Date</label>
-            <input type="date" class="custom-input" formControlName="departureDate" [class.is-invalid]="submitted && f['departureDate'].errors">
+            <input type="date" class="custom-input" formControlName="departureDate" [min]="minDate" [class.is-invalid]="submitted && f['departureDate'].errors">
           </div>
 
           @if (error) {
