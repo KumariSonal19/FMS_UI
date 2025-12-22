@@ -14,13 +14,14 @@ import { filter } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   isAuthenticated = false;
   username = '';
-
+  isAdmin = false;
   constructor(
     private authService: AuthService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    // this.isAdmin = this.authService.isAdmin();
     this.authService.currentUser$.subscribe(() => {
       this.updateAuthStatus();
     });
@@ -38,6 +39,11 @@ export class AppComponent implements OnInit {
     if (this.isAuthenticated) {
       const user = this.authService.getUser(); 
       this.username = user?.username || 'User';
+      this.isAdmin = this.authService.isAdmin();
+    }
+    else {
+      this.username = '';
+      this.isAdmin = false;
     }
   }
 
