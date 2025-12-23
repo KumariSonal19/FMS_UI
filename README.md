@@ -35,7 +35,9 @@ This application serves as the UI layer for a Microservices-based Flight Booking
 ![Signin](./Screenshots/SignIn-After-Register.png) 
 ![FlightSearch](./Screenshots/Before-FlightSearch.png) 
 ![FlightSearch](./Screenshots/After-FlightSearch.png) 
-
+![MyBookings](./Screenshots/MyBookingsPath.png)
+![CancelTicket](./Screenshots/CancelTicketPop-up.png)\
+![ProfileChangePassword](./Screenshots/ProfileChangePasswordOption.png)
 ---
 
 ## Development server
