@@ -1,9 +1,8 @@
-/* --- Container & Card Styling --- */
 .flight-container {
   display: flex;
   justify-content: center;
   padding-top: 3rem;
-  background-color: #f8f9fa; /* Light grey background for page */
+  background-color: #f8f9fa; 
   min-height: 100vh;
 }
 
@@ -12,14 +11,13 @@
   border-radius: 8px;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
   width: 100%;
-  max-width: 800px; /* Limits width on large screens */
+  max-width: 800px; 
   overflow: hidden;
   height: fit-content;
 }
 
-/* --- Header Styling --- */
 .card-header {
-  background-color: #212529; /* Dark background */
+  background-color: #212529; 
   color: white;
   padding: 1rem 1.5rem;
   display: flex;
@@ -32,23 +30,21 @@
   font-weight: 500;
 }
 
-/* --- Body & Typography --- */
 .card-body {
   padding: 2rem;
 }
 
 .section-title {
-  color: #0d6efd; /* Primary Blue */
+  color: #0d6efd; 
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
   font-weight: 500;
 }
 
-/* --- Form Grid System --- */
 .form-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem; /* Space between items */
+  gap: 1rem; 
 }
 
 .form-group {
@@ -56,19 +52,16 @@
   flex-direction: column;
 }
 
-/* Logic to mimic col-md-4 (3 items per row) */
 .group-third {
   flex: 1 1 calc(33.333% - 1rem); 
-  min-width: 200px; /* Responsive fallback */
+  min-width: 200px; 
 }
 
-/* Logic to mimic col-md-6 (2 items per row) */
 .group-half {
   flex: 1 1 calc(50% - 1rem);
-  min-width: 250px; /* Responsive fallback */
+  min-width: 250px; 
 }
 
-/* --- Input Styling --- */
 label {
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -82,7 +75,7 @@ input {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out;
   width: 100%;
-  box-sizing: border-box; /* Ensures padding doesn't break width */
+  box-sizing: border-box; 
 }
 
 input:focus {
@@ -91,7 +84,6 @@ input:focus {
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* --- Button Styling --- */
 .btn-submit {
   width: 100%;
   margin-top: 1.5rem;
@@ -110,7 +102,6 @@ input:focus {
   background-color: #0b5ed7;
 }
 
-/* --- Alerts --- */
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
@@ -130,10 +121,9 @@ input:focus {
   border-color: #f5c2c7;
 }
 
-/* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
   .group-third, .group-half {
-    flex: 1 1 100%; /* Make everything full width on mobile */
+    flex: 1 1 100%; 
   }
   
   .card-body {
