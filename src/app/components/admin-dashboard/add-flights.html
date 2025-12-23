@@ -3,10 +3,8 @@
     <div class="card-header">
       <h4>Add Flights</h4>
     </div>
-    
     <div class="card-body">
       <h5 class="section-title">Enter Flight Details</h5>
-
       <div *ngIf="successMessage" class="alert alert-success">
         {{ successMessage }}
       </div>
@@ -29,7 +27,6 @@
             <label>Aircraft Type</label>
             <input type="text" [(ngModel)]="flight.aircraft" name="aircraft" placeholder="e.g. A320" required>
           </div>
-
           <div class="form-group group-half">
             <label>Source (From)</label>
             <input type="text" [(ngModel)]="flight.source" name="src" placeholder="e.g. BLR" required>
@@ -38,16 +35,14 @@
             <label>Destination (To)</label>
             <input type="text" [(ngModel)]="flight.destination" name="dest" placeholder="e.g. CCU" required>
           </div>
-
           <div class="form-group group-half">
             <label>Departure Time</label>
-            <input type="datetime-local" [(ngModel)]="flight.departureTime" name="dept" required>
+            <input type="datetime-local" [(ngModel)]="flight.departureTime" name="dept" [min]="minDate" required>
           </div>
           <div class="form-group group-half">
             <label>Arrival Time</label>
-            <input type="datetime-local" [(ngModel)]="flight.arrivalTime" name="arr" required>
+            <input type="datetime-local" [(ngModel)]="flight.arrivalTime" name="arr" [min]="flight.departureTime || minDate" required>
           </div>
-
           <div class="form-group group-half">
             <label>Price (₹)</label>
             <input type="number" [(ngModel)]="flight.price" name="price" required>
@@ -56,10 +51,8 @@
             <label>Total Seats</label>
             <input type="number" [(ngModel)]="flight.totalSeats" name="seats" required>
           </div>
-
         </div>
-
-        <button type="submit" class="btn-submit">Add Inventory</button>
+        <button type="submit" class="btn-submit">Add Flight</button>
       </form>
     </div>
   </div>

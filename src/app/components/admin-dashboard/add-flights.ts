@@ -17,6 +17,7 @@ export class AdminDashboardComponent {
   flight = this.createEmptyFlight();
   successMessage = '';
   errorMessage = '';
+  minDate: string = '';
 
   constructor(
     private flightService: FlightService,
@@ -24,6 +25,13 @@ export class AdminDashboardComponent {
     private router: Router
   ) {
     this.redirectIfNotAdmin();
+    this.initializeMinDate();
+  }
+
+  private initializeMinDate(): void {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    this.minDate = now.toISOString().slice(0, 16);
   }
 
   addFlight(): void {
