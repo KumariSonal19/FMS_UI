@@ -1,4 +1,5 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,10 +11,11 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './add-flights.html',
-  styleUrls:['./add-flights.css']
+  styleUrls: ['./add-flights.css']
 })
 export class AdminDashboardComponent {
 
+  @ViewChild('flightForm') flightForm!: NgForm;
   flight = this.createEmptyFlight();
   successMessage = '';
   errorMessage = '';
@@ -22,7 +24,8 @@ export class AdminDashboardComponent {
   constructor(
     private flightService: FlightService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {
     this.redirectIfNotAdmin();
     this.initializeMinDate();
@@ -35,6 +38,11 @@ export class AdminDashboardComponent {
   }
 
   addFlight(): void {
+    if (!this.flight.airlineCode || !this.flight.airlineName || !this.flight.price || !this.flight.totalSeats) {
+      this.showError('Please fill in all required fields correctly.');
+      return;
+    }
+
     if (!this.isTimeValid()) {
       this.showError('Please select both Departure and Arrival times.');
       return;
@@ -84,19 +92,29 @@ export class AdminDashboardComponent {
   private handleSuccess(): void {
     this.successMessage = 'Flight Added Successfully!';
     this.errorMessage = '';
+    if (this.flightForm) {
+      this.flightForm.resetForm(); 
+    }
+    
     this.flight = this.createEmptyFlight();
+    this.cd.detectChanges();
+    
+    setTimeout(() => {
+        this.successMessage = '';
+        this.cd.detectChanges();
+    }, 3000);
   }
 
   private handleError(err: any): void {
     console.error('Add Flight Error:', err);
-    this.errorMessage =
-      'Failed to add flight inventory: ' +
-      (err.error?.message || err.statusText);
+    this.errorMessage = 'Failed to add flight inventory: ' + (err.error?.message || err.statusText);
+    this.cd.detectChanges();
   }
 
   private showError(message: string): void {
     this.errorMessage = message;
     this.successMessage = '';
+    this.cd.detectChanges();
   }
 
   private createEmptyFlight() {
