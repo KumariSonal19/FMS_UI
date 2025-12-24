@@ -26,7 +26,7 @@
           <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
         </div>
 
-        <form (ngSubmit)="onChangePassword()" class="password-form">
+        <form (ngSubmit)="onChangePassword()" class="password-form" #passForm="ngForm">
           
           <div class="form-group">
             <label class="form-label">Current Password</label>
@@ -34,7 +34,14 @@
                    [(ngModel)]="passwordData.currentPassword" 
                    name="currentPass" 
                    placeholder="Enter your old password" 
-                   class="form-input" required>
+                   class="form-input" 
+                   required
+                   #currPass="ngModel"
+                   [class.invalid-input]="currPass.invalid && (currPass.dirty || currPass.touched)">
+            
+            <div *ngIf="currPass.invalid && (currPass.dirty || currPass.touched)" class="text-danger small mt-1">
+              Current password is required.
+            </div>
           </div>
 
           <div class="form-group">
@@ -43,7 +50,20 @@
                    [(ngModel)]="passwordData.newPassword" 
                    name="newPass" 
                    placeholder="Enter new password (min 6 chars)" 
-                   class="form-input" required>
+                   class="form-input" 
+                   required 
+                   minlength="6"
+                   pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$"
+                   #newPass="ngModel"
+                   [class.invalid-input]="newPass.invalid && (newPass.dirty || newPass.touched)">
+
+            <div *ngIf="newPass.invalid && (newPass.dirty || newPass.touched)" class="text-danger small mt-1">
+              <div *ngIf="newPass.errors?.['required']">New password is required.</div>
+              <div *ngIf="newPass.errors?.['minlength']">Must be at least 6 characters.</div>
+              <div *ngIf="newPass.errors?.['pattern']">
+                Must contain 1 Uppercase, 1 Number, and 1 Symbol (@$!%*?&).
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -52,16 +72,27 @@
                    [(ngModel)]="passwordData.confirmPassword" 
                    name="confirmPass" 
                    placeholder="Re-enter new password" 
-                   class="form-input" required>
+                   class="form-input" 
+                   required
+                   #confPass="ngModel"
+                   [class.invalid-input]="confPass.invalid && (confPass.dirty || confPass.touched)">
+            
+            <div *ngIf="confPass.invalid && (confPass.dirty || confPass.touched)" class="text-danger small mt-1">
+              Confirmation is required.
+            </div>
           </div>
 
-          <button type="submit" class="btn-submit-pass">Update Password</button>
+          <button type="submit" class="btn-submit-pass" [disabled]="passForm.invalid">
+            Update Password
+          </button>
         </form>
       </div>
     }
+    
     <button class="btn-change-pass mb-4" (click)="togglePasswordForm()">
-          {{ showPasswordForm ? 'Cancel':'Change Password' }}
+          {{ showPasswordForm ? 'Cancel' : 'Change Password' }}
     </button>
+    
     <div class="card-footer">
       <button class="btn-logout" (click)="logout()">
         Sign Out

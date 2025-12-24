@@ -26,27 +26,25 @@ export class UpdatePasswordComponent {
     this.success = '';
 
     if (this.newPassword !== this.confirmPassword) {
-      this.error = "Passwords do not match!";
+      this.error = "New Password and Confirmed Passwords do not match!";
       return;
     }
 
     this.loading = true;
     const user = this.authService.getUser();
 
-    // Call AuthService
     this.authService.changePassword(user.username, this.oldPassword, this.newPassword)
       .subscribe({
         next: (res) => {
           this.success = "Password updated successfully! Redirecting to login...";
           
-          // Clear session and force re-login after 2 seconds
           setTimeout(() => {
             this.authService.logout();
             this.router.navigate(['/login']);
           }, 2000);
         },
         error: (err) => {
-          this.error = err.error?.message || "Failed to update password. Check your current password.";
+          this.error = "Old password is incorrect";
           this.loading = false;
         }
       });

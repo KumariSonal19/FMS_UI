@@ -49,7 +49,7 @@ export class ProfileComponent implements OnInit {
     this.errorMessage = '';
  
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      this.errorMessage = 'New password and Confirm password do not match!';
+      this.errorMessage = 'New password and Confirmed password do not match!';
       return;
     }
 
@@ -78,11 +78,12 @@ export class ProfileComponent implements OnInit {
         }, 2000);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Failed to update password.';
+        this.errorMessage = 'Incorrect old password';
         this.message = '';
         this.cd.detectChanges(); 
       }
     });
+    this.cd.detectChanges();
   }
 
   logout(): void {
