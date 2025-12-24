@@ -31,6 +31,18 @@ export class AdminDashboardComponent {
     this.initializeMinDate();
   }
 
+  airports = [
+    { code: 'DEL', name: 'New Delhi (DEL)' },
+    { code: 'BOM', name: 'Mumbai (BOM)' },
+    { code: 'BLR', name: 'Bengaluru (BLR)' },
+    { code: 'CCU', name: 'Kolkata (CCU)' },
+    { code: 'MAA', name: 'Chennai (MAA)' },
+    { code: 'HYD', name: 'Hyderabad (HYD)' },
+    { code: 'PNQ', name: 'Pune (PNQ)' },
+    { code: 'AMD', name: 'Ahmedabad (AMD)' },
+    { code: 'GOI', name: 'Goa (GOI)' }
+  ];
+  
   private initializeMinDate(): void {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -95,7 +107,7 @@ export class AdminDashboardComponent {
     if (this.flightForm) {
       this.flightForm.resetForm(); 
     }
-    
+
     this.flight = this.createEmptyFlight();
     this.cd.detectChanges();
     

@@ -153,3 +153,24 @@ input:focus {
     padding: 1rem;
   }
 }
+
+input, select {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: white; 
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+select option[disabled] {
+  color: #999;
+}
