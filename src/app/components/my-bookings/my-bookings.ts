@@ -17,8 +17,14 @@ export class MyBookingsComponent implements OnInit {
   loading = true;
   error = '';
   currentUserEmail = ''; 
+
   showCancelModal = false;
   pnrToCancel: string | null = null;
+
+  showMessageModal = false;
+  messageModalTitle = '';
+  messageModalBody = '';
+  isError = false;
 
   constructor(
     private flightService: FlightService,
@@ -29,11 +35,9 @@ export class MyBookingsComponent implements OnInit {
   ngOnInit() {
     const user = this.authService.getUser();
     if (user && user.email) {
-      console.log('Fetching bookings for:', user.email);
       this.currentUserEmail = user.email;
       this.loadBookings();
     } else {
-      console.error('User email not found.');
       this.error = 'Please log in to view your bookings.';
       this.loading = false;
     }
@@ -41,16 +45,13 @@ export class MyBookingsComponent implements OnInit {
 
   loadBookings() {
     this.loading = true;
-    
     this.flightService.getBookingHistory(this.currentUserEmail).subscribe({
       next: (data) => {
-        console.log('Bookings loaded:', data);
         this.bookings = data || [];
         this.loading = false;
         this.cd.detectChanges(); 
       },
       error: (err) => {
-        console.error('Fetch error:', err);
         this.error = 'Could not load bookings.';
         this.loading = false;
         this.cd.detectChanges();
@@ -70,17 +71,43 @@ export class MyBookingsComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  closeMessageModal(){
+    this.showMessageModal = false;
+    this.cd.detectChanges();
+  }
+
   confirmCancel() {
     if (!this.pnrToCancel) return;
+    this.error = ''; 
+
     this.flightService.cancelBooking(this.pnrToCancel).subscribe({
-      next: (response) => {
+      next: (updatedBooking) => {
+        const index = this.bookings.findIndex(b => b.pnr === this.pnrToCancel);
+        if (index !== -1) {
+          if (updatedBooking) {
+             this.bookings[index] = updatedBooking;
+          } else {
+             this.bookings[index].bookingStatus = 'CANCELLED'; 
+          }
+        }
+        
         this.closeModal();
-        this.loadBookings(); 
+        this.showPopup('Success', 'Ticket Cancelled Successfully', false);
       },
       error: (err) => {
-        console.error("Cancellation Failed", err);
+        console.error("Cancellation Error:", err);
+        const backendMessage = err.error?.message || "Cancellation not allowed less than 24hours before journey.";
         this.closeModal();
+        this.showPopup('Cancellation Failed', backendMessage, true);
       }
     });
+  }
+
+  showPopup(title: string, message: string, isError: boolean) {
+    this.messageModalTitle = title;
+    this.messageModalBody = message;
+    this.isError = isError;
+    this.showMessageModal = true;
+    this.cd.detectChanges();
   }
 }

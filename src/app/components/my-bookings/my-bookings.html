@@ -10,10 +10,6 @@
     <p>Loading your bookings...</p>
   </div>
 
-  <div *ngIf="error" class="alert-box alert-error">
-    {{ error }}
-  </div>
-
   <div *ngIf="!loading && bookings.length === 0" class="state-message empty-state">
     <h5>No bookings found.</h5>
     <p>It looks like you haven't booked any flights yet.</p>
@@ -110,6 +106,15 @@
     <div class="modal-actions">
       <button class="btn-secondary" (click)="closeModal()">No, Keep it</button>
       <button class="btn-danger-confirm" (click)="confirmCancel()">Yes, Cancel Ticket</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showMessageModal">
+  <div class="modal-content fade-in-up">
+    <p class="modal-message-body">{{ messageModalBody }}</p>
+    <div class="modal-actions single-action">
+      <button class="btn-primary-close" (click)="closeMessageModal()">OK</button>
     </div>
   </div>
 </div>
