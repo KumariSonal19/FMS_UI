@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService, 
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -67,6 +68,7 @@ export class LoginComponent implements OnInit {
         else {
           this.router.navigateByUrl(this.returnUrl);
         }
+        this.cd.detectChanges();
       },
       error: (error) => {
         console.error('Login failed:', error);
@@ -78,7 +80,9 @@ export class LoginComponent implements OnInit {
           this.error = 'Login failed. Please try again later.';
         }
         this.loading = false;
+        this.cd.detectChanges();
       }
+     
     });
   }
 }
